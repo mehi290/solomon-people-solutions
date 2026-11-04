@@ -13,21 +13,21 @@ const FAQS = [
   ["How many participants per session?", "Group size depends on the programme. [SPS to confirm recommended minimum and maximum]"],
   ["How soon can you start?", "We send a proposal within 2 business days. [SPS to confirm typical lead time to first session]"],
   ["Do you provide certificates of completion?", "[SPS to confirm whether certificates are issued and who issues them]"],
-];
+] as const;
 
 const PROGRAMMES = [
   { title: TOPICS[0], points: ["Lead and motivate teams with confidence", "Delegate, give feedback and coach", "Make decisions and manage priorities"] },
   { title: TOPICS[1], points: ["Understand customer needs and objections", "Build trust and close with structure", "Deliver consistent, standout service"] },
   { title: TOPICS[2], points: ["Communicate clearly in person and in writing", "Handle difficult conversations calmly", "Collaborate across teams and cultures"] },
   { title: TOPICS[3], points: ["Run a structured training needs analysis", "Design and deliver engaging sessions", "Measure training impact and report it"] },
-];
+] as const;
 
 const STEPS = [
   ["Training needs analysis", "We talk to your leaders and team to find the real skill gaps."],
   ["Programme design", "We build the content around your goals, roles and context."],
   ["Delivery", "Interactive sessions at your office or a Dubai venue, in English or Arabic."],
   ["Impact report", "You get a clear report on participation, feedback and results."],
-];
+] as const;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -64,7 +64,7 @@ function Index() {
     captureAttribution();
     const t = new URLSearchParams(window.location.search).get("topic");
     setHeadline(headlineFor(t));
-    if (t && URL_TOPIC_TO_FORM[t.toLowerCase()]) setTopic(URL_TOPIC_TO_FORM[t.toLowerCase()]);
+    if (t && URL_TOPIC_TO_FORM[t.toLowerCase()]) setTopic(URL_TOPIC_TO_FORM[t.toLowerCase()] ?? "");
   }, []);
 
   const pick = (t: string) => {
