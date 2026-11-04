@@ -26,7 +26,7 @@ const leadSchema = z.object({
 export const submitLead = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => leadSchema.parse(d))
   .handler(async ({ data }) => {
-    const url = process.env.ZOHO_WEBHOOK_URL;
+    const url = process.env["ZOHO_WEBHOOK_URL"];
     if (!url) {
       console.error("ZOHO_WEBHOOK_URL is not set");
       return { ok: false as const, error: "not_configured" };

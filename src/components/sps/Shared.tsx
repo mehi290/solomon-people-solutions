@@ -59,8 +59,8 @@ export function useThankYouEvent(quality: "qualified" | "standard") {
     pushEvent({
       event: "generate_lead",
       lead_quality: quality,
-      training_topic: stored.training_topic,
-      company_size: stored.company_size,
+      training_topic: stored["training_topic"],
+      company_size: stored["company_size"],
       page_type: "thank_you",
     });
   }, [quality]);

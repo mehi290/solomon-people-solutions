@@ -40,7 +40,7 @@ const FREE_DOMAINS = ["gmail", "yahoo", "hotmail", "outlook", "icloud", "live"];
 export function isFreeEmail(email: string) {
   const domain = email.split("@")[1]?.toLowerCase() ?? "";
   const first = domain.split(".")[0];
-  return FREE_DOMAINS.includes(first);
+  return FREE_DOMAINS.includes(first ?? "");
 }
 
 export function isValidUaePhone(phone: string) {
@@ -62,7 +62,7 @@ export function readAttribution(): Record<string, string> {
   if (typeof document === "undefined") return {};
   const m = document.cookie.match(new RegExp(`(?:^|; )${COOKIE}=([^;]*)`));
   try {
-    return m ? JSON.parse(decodeURIComponent(m[1])) : {};
+    return m ? JSON.parse(decodeURIComponent(m[1] ?? "")) : {};
   } catch {
     return {};
   }
