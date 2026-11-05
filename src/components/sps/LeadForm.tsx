@@ -4,8 +4,6 @@ import { useServerFn } from "@tanstack/react-start";
 import { submitLead } from "@/lib/lead.functions";
 import {
   COMPANY_SIZES,
-  PARTICIPANTS,
-  START_TIMES,
   TOPIC_OPTIONS,
   isFreeEmail,
   isValidUaePhone,
@@ -19,12 +17,8 @@ const empty = {
   work_email: "",
   phone: "+971 ",
   company: "",
-  job_title: "",
   company_size: "",
   training_topic: "",
-  participants: "",
-  start_time: "",
-  message: "",
 };
 type Values = typeof empty;
 
@@ -48,7 +42,7 @@ export function LeadForm({ topic }: { topic: string }) {
 
   function validate() {
     const e: typeof errors = {};
-    const req: (keyof Values)[] = ["full_name", "work_email", "phone", "company", "job_title", "company_size", "training_topic", "participants", "start_time"];
+    const req: (keyof Values)[] = ["full_name", "work_email", "phone", "company", "company_size", "training_topic"];
     for (const k of req) if (!v[k].trim() || v[k].trim() === "+971") e[k] = "Required";
     if (!e.work_email) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.work_email.trim())) e.work_email = "Please enter a valid email";
@@ -64,7 +58,7 @@ export function LeadForm({ topic }: { topic: string }) {
     setSubmitError("");
     if (!validate()) return;
     setLoading(true);
-    const quality = leadQuality(v.company_size, v.participants, v.start_time);
+    const quality = leadQuality(v.company_size);
     const attr = readAttribution();
     try {
       const res = await submit({
@@ -114,15 +108,9 @@ export function LeadForm({ topic }: { topic: string }) {
         {field("phone", "Mobile or WhatsApp number", <input type="tel" className={inputCls} value={v.phone} onChange={set("phone")} autoComplete="tel" />)}
         <div className="grid gap-4 sm:grid-cols-2">
           {field("company", "Company name", <input className={inputCls} value={v.company} onChange={set("company")} autoComplete="organization" />)}
-          {field("job_title", "Job title", <input className={inputCls} value={v.job_title} onChange={set("job_title")} autoComplete="organization-title" />)}
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2">
           {field("company_size", "Company size", select("company_size", COMPANY_SIZES))}
-          {field("participants", "Number of participants", select("participants", PARTICIPANTS))}
         </div>
         {field("training_topic", "Training topic", select("training_topic", TOPIC_OPTIONS))}
-        {field("start_time", "When do you want to start?", select("start_time", START_TIMES))}
-        {field("message", "Message", <textarea rows={3} className={inputCls} value={v.message} onChange={set("message")} />, true)}
       </div>
       {submitError && <p role="alert" className="mt-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{submitError}</p>}
       <button

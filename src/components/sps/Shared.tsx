@@ -1,15 +1,14 @@
 import { useEffect } from "react";
-import logo from "@/assets/sps_logo.png.asset.json";
 import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, pushEvent } from "@/lib/sps";
 
 export function Logo() {
   return (
     <img
-      src={logo.url}
+      src="/sps-logo.png"
       alt="Solomon People Solutions"
-      width={135}
-      height={53}
-      className="h-11 w-auto rounded-md"
+      width={159}
+      height={54}
+      className="h-8 w-auto md:h-10"
     />
   );
 }
