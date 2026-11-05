@@ -17,8 +17,6 @@ export const TOPICS = [
 ] as const;
 export const TOPIC_OPTIONS = [...TOPICS, "Not sure yet"];
 export const COMPANY_SIZES = ["1 to 50", "51 to 200", "201 to 500", "501 to 1,000", "1,000+"];
-export const PARTICIPANTS = ["1 to 5", "6 to 15", "16 to 30", "30+"];
-export const START_TIMES = ["This month", "In 1 to 3 months", "Later this year", "Just exploring"];
 
 export const HEADLINES: Record<string, string> = {
   leadership: "Leadership and management training for your team in Dubai",
@@ -48,10 +46,9 @@ export function isValidUaePhone(phone: string) {
   return /^(\+971|00971|0)?(5\d{8}|[2-9]\d{7})$/.test(d);
 }
 
-export function leadQuality(size: string, participants: string, start: string): "qualified" | "standard" {
-  const bigEnough = COMPANY_SIZES.indexOf(size) >= 1;
-  const enoughPeople = PARTICIPANTS.indexOf(participants) >= 1;
-  return bigEnough && enoughPeople && start !== "Just exploring" ? "qualified" : "standard";
+/** Qualified = company with 51 or more staff. */
+export function leadQuality(size: string): "qualified" | "standard" {
+  return COMPANY_SIZES.indexOf(size) >= 1 ? "qualified" : "standard";
 }
 
 // ---- Tracking (browser only) ----
