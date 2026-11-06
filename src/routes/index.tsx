@@ -6,13 +6,15 @@ import { LeadForm } from "@/components/sps/LeadForm";
 import { Logo, PhoneLink, WhatsAppButton } from "@/components/sps/Shared";
 import { ADDRESS, DEFAULT_HEADLINE, TOPICS, URL_TOPIC_TO_FORM, captureAttribution, headlineFor, noindexMeta } from "@/lib/sps";
 
+// Client logos and case studies stay hidden until SPS sends real ones.
+const SHOW_PROOF = false;
+
 const FAQS = [
-  ["How long are the programmes?", "We offer half day, full day and 2 day formats, and can design longer programmes. [SPS to confirm available formats]"],
+  ["How long are the programmes?", "We offer half day, full day and 2 day formats, and can design longer programmes."],
   ["Can you deliver at our office?", "Yes. We deliver in house at your office or at a venue in Dubai."],
-  ["Do you offer Arabic delivery?", "Yes, programmes can be delivered in English or Arabic. [SPS to confirm topics available in Arabic]"],
-  ["How many participants per session?", "Group size depends on the programme. [SPS to confirm recommended minimum and maximum]"],
-  ["How soon can you start?", "We send a proposal within 2 business days. [SPS to confirm typical lead time to first session]"],
-  ["Do you provide certificates of completion?", "[SPS to confirm whether certificates are issued and who issues them]"],
+  ["Do you offer Arabic delivery?", "Yes, programmes can be delivered in English or Arabic."],
+  ["How many participants per session?", "Group size depends on the programme. We recommend the right size for your team in the proposal."],
+  ["How soon can you start?", "We send a proposal within 2 business days and agree the start date with you."],
 ] as const;
 
 const PROGRAMMES = [
@@ -101,6 +103,9 @@ function Index() {
         <LeadForm topic={topic} />
       </section>
 
+      {/* Trust bar: hidden until SPS sends real client logos (set SHOW_PROOF to true) */}
+      {SHOW_PROOF && (
+        <>
       {/* Trust bar */}
       <section className="border-y border-border bg-card py-8" style={{ contentVisibility: "auto" }}>
         <div className="mx-auto max-w-6xl px-5">
@@ -114,6 +119,8 @@ function Index() {
           </div>
         </div>
       </section>
+        </>
+      )}
 
       {/* Programmes */}
       <section className="mx-auto max-w-6xl px-5 py-20" style={{ contentVisibility: "auto" }}>
@@ -155,6 +162,9 @@ function Index() {
         </div>
       </section>
 
+      {/* Results: hidden until SPS sends real testimonials and case studies (set SHOW_PROOF to true) */}
+      {SHOW_PROOF && (
+        <>
       {/* Results */}
       <section className="mx-auto max-w-6xl px-5 py-20" style={{ contentVisibility: "auto" }}>
         <h2 className="font-display text-3xl md:text-4xl">Results</h2>
@@ -168,6 +178,8 @@ function Index() {
           ))}
         </div>
       </section>
+        </>
+      )}
 
       {/* FAQ */}
       <section className="bg-card py-20" style={{ contentVisibility: "auto" }}>
