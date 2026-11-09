@@ -1,13 +1,20 @@
 // Shared config and pure helpers for the Solomon People Solutions ads landing page.
 
-export const GTM_ID = "GTM-XXXXXXX"; // PLACEHOLDER: replace with real GTM container ID
+// Tracking. Leave empty until the real IDs exist; nothing loads while empty.
+export const GTM_ID = ""; // e.g. "GTM-ABC1234"
+export const GOOGLE_ADS_ID = ""; // e.g. "AW-123456789"
+export const GOOGLE_ADS_LEAD_LABEL = ""; // conversion label of the "Submit lead form" action
+
+// Leads are emailed to LEAD_EMAIL through FormSubmit (formsubmit.co).
+// The first submission sends an activation email to LEAD_EMAIL; click it once.
+export const LEAD_EMAIL = "mercyget4@gmail.com";
 export const ZOHO_BOOKINGS_URL = "https://PLACEHOLDER-zoho-bookings-link"; // PLACEHOLDER
-export const WHATSAPP_NUMBER = "971500000000"; // PLACEHOLDER: replace with SPS WhatsApp mobile
+export const WHATSAPP_NUMBER = "971552815948";
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
-export const PHONE_DISPLAY = "+971 4 564 6002";
-export const PHONE_TEL = "tel:+97145646002";
+export const PHONE_DISPLAY = "+971 4 876 9263";
+export const PHONE_TEL = "tel:+97148769263";
 export const ADDRESS =
-  "Office 5, 11th Floor, Crystal Tower, M Hotel Downtown by Millennium, Al Asayal Street, Dubai, UAE";
+  "Office #51, 9th & 10th Floor, Crystal Tower, Millennium Central Downtown, Al Asayel St, Marasi Drive, Downtown Dubai, UAE";
 
 export const TOPICS = [
   "Leadership and Management",
@@ -87,6 +94,21 @@ declare global {
     dataLayer?: Record<string, unknown>[];
   }
 }
+export async function sendLeadEmail(lead: Record<string, string>) {
+  const res = await fetch(`https://formsubmit.co/ajax/${LEAD_EMAIL}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({
+      _subject: `New training lead: ${lead["company"] ?? ""} (${lead["lead_quality"] ?? ""})`,
+      _template: "table",
+      _captcha: "false",
+      ...lead,
+    }),
+  });
+  const json = (await res.json().catch(() => ({}))) as { success?: string | boolean; message?: string };
+  if (!res.ok || String(json.success) !== "true") throw new Error(json.message || `status ${res.status}`);
+}
+
 export function pushEvent(data: Record<string, unknown>) {
   if (typeof window === "undefined") return;
   window.dataLayer = window.dataLayer || [];
