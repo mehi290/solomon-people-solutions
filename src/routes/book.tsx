@@ -16,7 +16,7 @@ export const Route = createFileRoute("/book")({
 });
 
 function Book() {
-  useThankYouEvent("qualified");
+  useThankYouEvent();
   return (
     <SimpleShell>
       <h1 className="mt-6 font-display text-3xl leading-tight md:text-4xl">Thank you, your request is in.</h1>
