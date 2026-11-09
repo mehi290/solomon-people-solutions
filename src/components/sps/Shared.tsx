@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, pushEvent } from "@/lib/sps";
+import { GOOGLE_ADS_ID, GOOGLE_ADS_LEAD_LABEL, PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, pushEvent } from "@/lib/sps";
 
 export function Logo() {
   return (
@@ -48,21 +48,26 @@ export function PhoneLink({ className = "" }: { className?: string }) {
   );
 }
 
-/** Thank-you pages re-push the lead event (once per submission) so GTM can fire conversions here too. */
-export function useThankYouEvent(quality: "qualified" | "standard") {
+/** Thank-you page: fires the Google Ads lead conversion once per real submission. */
+export function useThankYouEvent() {
   useEffect(() => {
     let stored: Record<string, unknown> = {};
     try {
       stored = JSON.parse(sessionStorage.getItem("sps_lead") || "{}");
+      sessionStorage.removeItem("sps_lead");
     } catch {}
+    if (!stored["training_topic"]) return; // page opened directly, not after a submission
     pushEvent({
-      event: "generate_lead",
-      lead_quality: quality,
+      event: "thank_you_view",
+      lead_quality: stored["lead_quality"],
       training_topic: stored["training_topic"],
       company_size: stored["company_size"],
-      page_type: "thank_you",
     });
-  }, [quality]);
+    const w = window as unknown as { gtag?: (...a: unknown[]) => void };
+    if (GOOGLE_ADS_ID && GOOGLE_ADS_LEAD_LABEL && w.gtag) {
+      w.gtag("event", "conversion", { send_to: `${GOOGLE_ADS_ID}/${GOOGLE_ADS_LEAD_LABEL}` });
+    }
+  }, []);
 }
 
 export function SimpleShell({ children }: { children: React.ReactNode }) {

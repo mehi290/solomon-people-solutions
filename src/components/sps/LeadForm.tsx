@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { submitLead } from "@/lib/lead.functions";
 import {
   COMPANY_SIZES,
   TOPIC_OPTIONS,
   isFreeEmail,
   isValidUaePhone,
+  PHONE_DISPLAY,
   leadQuality,
   pushEvent,
   readAttribution,
+  sendLeadEmail,
 } from "@/lib/sps";
 
 const empty = {
@@ -30,7 +30,6 @@ export function LeadForm({ topic }: { topic: string }) {
   const [errors, setErrors] = useState<Partial<Record<keyof Values, string>>>({});
   const [submitError, setSubmitError] = useState("");
   const [loading, setLoading] = useState(false);
-  const submit = useServerFn(submitLead);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,22 +60,19 @@ export function LeadForm({ topic }: { topic: string }) {
     const quality = leadQuality(v.company_size);
     const attr = readAttribution();
     try {
-      const res = await submit({
-        data: {
-          ...v,
-          work_email: v.work_email.trim(),
-          lead_quality: quality,
-          ...attr,
-          page_url: window.location.href,
-          submitted_at: new Date().toISOString(),
-        },
+      await sendLeadEmail({
+        ...v,
+        work_email: v.work_email.trim(),
+        lead_quality: quality,
+        ...attr,
+        page_url: window.location.href,
+        submitted_at: new Date().toLocaleString("en-GB", { timeZone: "Asia/Dubai" }),
       });
-      if (!res.ok) throw new Error(res.error);
       pushEvent({ event: "generate_lead", lead_quality: quality, training_topic: v.training_topic, company_size: v.company_size });
-      sessionStorage.setItem("sps_lead", JSON.stringify({ training_topic: v.training_topic, company_size: v.company_size }));
-      navigate({ to: quality === "qualified" ? "/book" : "/thankyou" });
+      sessionStorage.setItem("sps_lead", JSON.stringify({ training_topic: v.training_topic, company_size: v.company_size, lead_quality: quality }));
+      navigate({ to: "/thankyou" });
     } catch {
-      setSubmitError("Sorry, we couldn't send your request. Please try again, or call us on +971 4 564 6002. Your details are still here.");
+      setSubmitError(`Sorry, we couldn't send your request. Please try again, or call us on ${PHONE_DISPLAY}. Your details are still here.`);
       setLoading(false);
     }
   }
