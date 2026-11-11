@@ -116,7 +116,7 @@ export function LeadForm({ topic }: { topic: string }) {
       >
         {loading ? "Sending…" : "Request my proposal"}
       </button>
-      <p className="mt-3 text-center text-sm text-muted-foreground">We reply within 1 business hour, Sunday to Friday.</p>
+      <p className="mt-3 text-center text-sm text-muted-foreground">We reply within minutes during working hours.</p>
     </form>
   );
 }
