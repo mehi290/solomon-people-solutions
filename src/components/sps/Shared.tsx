@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { GOOGLE_ADS_ID, GOOGLE_ADS_LEAD_LABEL, PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, pushEvent } from "@/lib/sps";
+import { GOOGLE_ADS_LEAD_LABEL, GOOGLE_ADS_PHONE_LABEL, GOOGLE_ADS_WHATSAPP_LABEL, PHONE_DISPLAY, PHONE_TEL, WHATSAPP_URL, adsConversion, pushEvent } from "@/lib/sps";
 
 export function Logo() {
   return (
@@ -31,7 +31,10 @@ export function WhatsAppButton({ floating = false }: { floating?: boolean }) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
-      onClick={() => pushEvent({ event: "whatsapp_click" })}
+      onClick={() => {
+        pushEvent({ event: "whatsapp_click" });
+        adsConversion(GOOGLE_ADS_WHATSAPP_LABEL);
+      }}
       className={cls}
     >
       <WhatsAppIcon className={floating ? "h-7 w-7" : "h-5 w-5"} />
@@ -42,7 +45,10 @@ export function WhatsAppButton({ floating = false }: { floating?: boolean }) {
 
 export function PhoneLink({ className = "" }: { className?: string }) {
   return (
-    <a href={PHONE_TEL} onClick={() => pushEvent({ event: "phone_click" })} className={className}>
+    <a href={PHONE_TEL} onClick={() => {
+        pushEvent({ event: "phone_click" });
+        adsConversion(GOOGLE_ADS_PHONE_LABEL);
+      }} className={className}>
       {PHONE_DISPLAY}
     </a>
   );
@@ -63,10 +69,7 @@ export function useThankYouEvent() {
       training_topic: stored["training_topic"],
       company_size: stored["company_size"],
     });
-    const w = window as unknown as { gtag?: (...a: unknown[]) => void };
-    if (GOOGLE_ADS_ID && GOOGLE_ADS_LEAD_LABEL && w.gtag) {
-      w.gtag("event", "conversion", { send_to: `${GOOGLE_ADS_ID}/${GOOGLE_ADS_LEAD_LABEL}` });
-    }
+    adsConversion(GOOGLE_ADS_LEAD_LABEL);
   }, []);
 }
 
