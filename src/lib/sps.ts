@@ -2,8 +2,10 @@
 
 // Tracking. Leave empty until the real IDs exist; nothing loads while empty.
 export const GTM_ID = ""; // e.g. "GTM-ABC1234"
-export const GOOGLE_ADS_ID = ""; // e.g. "AW-123456789"
-export const GOOGLE_ADS_LEAD_LABEL = ""; // conversion label of the "Submit lead form" action
+export const GOOGLE_ADS_ID = "AW-925863685";
+export const GOOGLE_ADS_LEAD_LABEL = "8SiyCMiNoLYdEIWevrkD"; // SPS NEW CT LP - FORM SUBMIT (primary)
+export const GOOGLE_ADS_WHATSAPP_LABEL = "qlVkCMuNoLYdEIWevrkD"; // SPS NEW CT LP - WHATSAPP CLICK (secondary)
+export const GOOGLE_ADS_PHONE_LABEL = "R-RcCM6NoLYdEIWevrkD"; // SPS NEW CT LP - PHONE CLICK (secondary)
 
 // Leads are emailed to LEAD_EMAIL through FormSubmit (formsubmit.co).
 // The first submission sends an activation email to LEAD_EMAIL; click it once.
@@ -107,6 +109,13 @@ export async function sendLeadEmail(lead: Record<string, string>) {
   });
   const json = (await res.json().catch(() => ({}))) as { success?: string | boolean; message?: string };
   if (!res.ok || String(json.success) !== "true") throw new Error(json.message || `status ${res.status}`);
+}
+
+/** Sends a Google Ads conversion for the given label, if the tag is loaded. */
+export function adsConversion(label: string) {
+  if (typeof window === "undefined" || !GOOGLE_ADS_ID || !label) return;
+  const w = window as unknown as { gtag?: (...a: unknown[]) => void };
+  w.gtag?.("event", "conversion", { send_to: `${GOOGLE_ADS_ID}/${label}` });
 }
 
 export function pushEvent(data: Record<string, unknown>) {
